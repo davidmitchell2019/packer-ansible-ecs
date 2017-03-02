@@ -4,6 +4,10 @@
 ## Introduction
 The project objective is to use Packer with the Ansible provisioner to create a "ready to use" Wordpress image which will use an RDS database.
 
+### Requirements
+You need Packer, Docker, and Ansible.
+You can benefit from having aws cli configured, as you will see from my aws examples, but is not required.
+
 ### What I have done
 - I created an RDS database with MariaDB engine using the aws cli:
 ```sh
@@ -47,7 +51,7 @@ packer build packer_aws.json
 packer build -var ‘aws_access_key=KEY’ -var ‘aws_secret_key=SECRET’ -var ‘aws_ECR_repository=REPOSITORY‘ packer_aws.json
 ```
 
-- At this point, the image is ready. You can go to AWS ECS, and create a task which uses this image and runs on and instance on your ECS cluster. You must make sure to configure the command to run: /usr/bin/supervisord
+- At this point, the image is ready. You can go to AWS ECS, and create a task which uses this image and runs on and instance on your ECS cluster. On the task creation, configure command as /usr/bin/supervisord, and forward a host port to port 80 on the container so you can connect to it from the web - like port 80 to port 80.
 
 ### How components interact between each other
 - Using packer, you pull a centos image which you will provision using the specified ansible playbook.
@@ -56,6 +60,8 @@ packer build -var ‘aws_access_key=KEY’ -var ‘aws_secret_key=SECRET’ -var
 ### What problems did I have
 - I had never used Packer, Ansible, or ECS before this, so it was a nice opportunity to learn them, as well as refresh my docker skills.
 - As I first tested this in virtualbox, I had then to adapt it for docker - meaning the nginx and php processes cannot run in the background, so I had to change the config files to the processes to run in the foreground. And I installed and configure supervisor (in the provisioning step through ansible) to start and manage them.
+- At some point on my tests, the packer build was failing to pull the centos image from the docker hub. I checked the status and it turns out there was an incident and the hub was down for some time, so that can happen.
+- I also noticed at some random times with the packer docker builder, a build can fail when copying a template into the container, and retrying it just finishes without errors.
 
 ### How would I have done things to have the best HA/automated architecture
 - As this is running on an ECS Cluster, I would configure the cluster to run on multiple availability zones with an Elastic Load Balancer. And for the RDS database I would configure several snapshots. That would take care of the high availability. I would also configure Auto Scaling based on the application load, and I could setup read replicas for the database if required.
