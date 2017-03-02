@@ -5,8 +5,7 @@
 The project objective is to use Packer with the Ansible provisioner to create a "ready to use" Wordpress image which will use an RDS database.
 
 ### Requirements
-You need Packer, Docker, and Ansible.
-You can benefit from having aws cli configured, as you will see from my aws examples, but is not required.
+You need Packer, Docker, Ansible and the 'aws cli' configured..
 
 ### What I have done
 - I created an RDS database with MariaDB engine using the aws cli:
@@ -41,6 +40,16 @@ aws rds describe-db-instances|grep Address
 ```
 > (I am forwarding local port 8083 to the container port 80, so I can then connect from a web browser to: localhost:8083)
 
+- At this point, configure your ECR repository access with docker login:
+Using AWS Cli, get your docker login credentials to be able to pull the image from the ECR Repository:
+```sh
+aws ecr get-login
+```
+You will get an ouput like the following, with the exact command to paste and make your login (so you are then authorized to pull images from this repository for 12hs)
+```sh
+docker login -u AWS -p {password} -e none {ecr_repository_ip}
+```
+
 - To have Packer build a container image and push it to an AWS ECR repository:
 ```sh
 packer build packer_aws.json
@@ -51,7 +60,7 @@ packer build packer_aws.json
 packer build -var ‘aws_access_key=KEY’ -var ‘aws_secret_key=SECRET’ -var ‘aws_ECR_repository=REPOSITORY‘ packer_aws.json
 ```
 
-- At this point, the image is ready. You can go to AWS ECS, and create a task which uses this image and runs on and instance on your ECS cluster. On the task creation, configure command as /usr/bin/supervisord, and forward a host port to port 80 on the container so you can connect to it from the web - like port 80 to port 80.
+- Now, the image is ready. You can go to AWS ECS, and create a task which uses this image and runs on and instance on your ECS cluster. On the task creation, configure command as /usr/bin/supervisord, and forward a host port to port 80 on the container so you can connect to it from the web - like port 80 to port 80.
 
 ### How components interact between each other
 - Using packer, you pull a centos image which you will provision using the specified ansible playbook.
