@@ -1,5 +1,5 @@
 # Packer / Ansible / Docker / AWS ECS and ECR Project
-<img src="https://cdn.worldvectorlogo.com/logos/hashicorp-packer.svg" alt="Packer" style="width: 200px;"/>
+<img src="https://cdn.worldvectorlogo.com/logos/hashicorp-packer.svg" alt="Packer" style="width: 40px;"/>
 
 #Project
 The project objective is to use Packer with the Ansible provisioner to create a "ready to use" Wordpress image which will use an RDS database.
