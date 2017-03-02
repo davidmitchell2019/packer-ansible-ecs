@@ -10,24 +10,25 @@
   --allocated-storage 5 \
   --db-instance-class db.t2.micro \
   --engine mariadb \
-  --master-username diego_rds \
-  --master-user-password CycloidRDS321 \
+  --master-username YOU_DB_MASTER_USER \
+  --master-user-password YOUR_DB_PASSWORD \
   --vpc-security-group-ids sg-04e8fb78 \
   --backup-retention-period 0 \
   --db-instance-identifier wordpress
 ```
-> The security group I specified only allows inbound traffic to port 3306, to be able to connect to the mariadb database.
+> I created that security group I specified to only allow inbound traffic to port 3306, to be able to connect to the mariadb database.
 
-You can get the database endpoint with:
+You can get the database endpoint/host with:
 ```sh
 aws rds describe-db-instances|grep Address
 ```
 - I created a packer file to build the container and push it to an AWS ECR repository.
-- I created an ansible playbook for the provisioning and configuration of nginx, php, wordpress and supervisor.
+- I created an ansible playbook for the provisioning and configuration of extra repositories, nginx, php, wordpress and supervisor.
 - Wordpress is configured to use the remote RDS database, which has a security group to only allow incoming connections on port 3306.
 
 ### How to run the project
-- IMPORTANT: on ansible-playbook/group_vars/all, you need to configure the database you want to use with user/pass/host. You also need to configure the aws key, secret, and ECR repository on packer_aws.json or pass the variables as detaled below.
+- Edit your remote database details on ansible-playbook/group_vars/all.
+- Configure the AWS key, secret, and ECR repository on packer_aws.json or pass the variables as I will explain below.
 
 - To first test the packer build with a local docker image you can do:
 ```sh
@@ -42,7 +43,7 @@ packer build packer_aws.json
 > (you must complete the aws secret, key, and ECR repository in this file to run it like this)
 or, you can run it passing the variables from the cli:
 ```sh
-packer build -var ‘aws_access_key=KEY’ -var ‘aws_secret_key=SECRET’ -var 'aws_ECR_repository=REPOSITORY' packer_aws.json
+packer build -var ‘aws_access_key=KEY’ -var ‘aws_secret_key=SECRET’ -var ‘aws_ECR_repository=REPOSITORY‘ packer_aws.json
 ```
 
 - At this point, the image is ready. You can go to AWS ECS, and create a task which uses this image and runs on and instance on your ECS cluster. You must make sure to configure the command to run: /usr/bin/supervisord

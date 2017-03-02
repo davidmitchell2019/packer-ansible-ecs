@@ -1,0 +1,33 @@
+{
+  "variables": {
+    "aws_access_key": "",
+    "aws_secret_key": "",
+    "aws_ECR_repository": ""
+  },
+  "builders": [{
+    "type": "docker",
+    "image": "centos",
+    "commit": true,
+    "privileged": true
+  }],
+  "provisioners": [{
+    "type": "ansible",
+    "playbook_file": "ansible-playbook/playbook.yml"
+  }],
+  "post-processors": [
+    [
+      {
+        "type": "docker-tag",
+        "repository": "{{user `aws_ECR_repository`}}",
+        "tag": "wordpress"
+      },
+      {
+        "type": "docker-push",
+        "ecr_login": true,
+        "aws_access_key": "{{user `aws_access_key`}}",
+        "aws_secret_key": "{{user `aws_secret_key`}}",
+        "login_server": "{{user `aws_ECR_repository`}}"
+      }
+    ]
+  ]
+}
