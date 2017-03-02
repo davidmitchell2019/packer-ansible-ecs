@@ -1,7 +1,7 @@
 # Packer / Ansible / Docker / AWS ECS and ECR Project
 <img src="https://cdn.worldvectorlogo.com/logos/hashicorp-packer.svg" alt="Packer" width="200" height="200" />
 
-#Project
+## Introduction
 The project objective is to use Packer with the Ansible provisioner to create a "ready to use" Wordpress image which will use an RDS database.
 
 ### What I have done
@@ -58,10 +58,10 @@ packer build -var ‘aws_access_key=KEY’ -var ‘aws_secret_key=SECRET’ -var
 - As I first tested this in virtualbox, I had then to adapt it for docker - meaning the nginx and php processes cannot run in the background, so I had to change the config files to the processes to run in the foreground. And I installed and configure supervisor (in the provisioning step through ansible) to start and manage them.
 
 ### How would I have done things to have the best HA/automated architecture
-- As this is running on an ECS Cluster, I would configure the cluster to run on multiple availability zones with an Elastic Load Balancer. That would take care of the high availability. I would also configure Auto Scaling based on the application load.
+- As this is running on an ECS Cluster, I would configure the cluster to run on multiple availability zones with an Elastic Load Balancer. And for the RDS database I would configure several snapshots. That would take care of the high availability. I would also configure Auto Scaling based on the application load, and I could setup read replicas for the database if required.
 
 ### Ideas to improve this kind of infrastructure.
--
+- At this moment I am quite happy with how the project turned out other than the suggestions above.
 
 ### Scenario Question
 Tomorrow we want to put this project in production. What would be your advices and choices to achieve that.
