@@ -1,5 +1,5 @@
 # owl-opswork
-![Ansible] (https://cdn.worldvectorlogo.com/logos/ansible.svg "Ansible")
+![Packer] (https://cdn.worldvectorlogo.com/logos/hashicorp-packer.svg "Packer")
 
 #Project
 
@@ -40,8 +40,8 @@ aws rds describe-db-instances|grep Address
 ```sh
 packer build packer_aws.json
 ```
-> (you must complete the aws secret, key, and ECR repository in this file to run it like this)
-or, you can run it passing the variables from the cli:
+> (you must complete the aws secret, key, and ECR repository in this file to run it like this) or, you can run it passing the variables from the cli:
+
 ```sh
 packer build -var ‘aws_access_key=KEY’ -var ‘aws_secret_key=SECRET’ -var ‘aws_ECR_repository=REPOSITORY‘ packer_aws.json
 ```
