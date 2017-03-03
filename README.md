@@ -1,11 +1,13 @@
 # Packer / Ansible / Docker / AWS ECS and ECR Project
 <img src="https://cdn.worldvectorlogo.com/logos/hashicorp-packer.svg" alt="Packer" width="200" height="200" />
+<img src="https://cdn.worldvectorlogo.com/logos/ansible.svg" alt="Ansible" width="200" height="200" />
+<img src="https://cdn.worldvectorlogo.com/logos/docker.svg" alt="Docker" width="200" height="200" />
 
 ## Introduction
 The project objective is to use Packer with the Ansible provisioner to create a "ready to use" Wordpress image which will use an RDS database.
 
 ### Requirements
-You need Packer, Docker, Ansible and the 'aws cli' configured..
+You need Packer, Docker, Ansible and the 'aws cli' configured.
 
 ### What I have done
 - I created an RDS database with MariaDB engine using the aws cli:
